@@ -1,0 +1,6 @@
+@LaNgoHoanPhuc_2380601724_HostAddress = http://localhost:5148
+
+GET {{LaNgoHoanPhuc_2380601724_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

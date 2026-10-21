@@ -1,0 +1,53 @@
+# ==========================================
+# 1. NET CORE / C# / VISUAL STUDIO (BTCN)
+# ==========================================
+# Thư mục biên dịch và cache của C#
+[Bb]in/
+[Oo]bj/
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+
+# Bỏ qua các file cài đặt môi trường nhạy cảm (chứa mật khẩu Gmail, secret key)
+appsettings.Development.json
+appsettings.Secrets.json
+
+# Tooling & Test
+TestResults/
+*.local.json
+
+# ==========================================
+# 2. FLUTTER / DART / ANDROID
+# ==========================================
+# Thư mục build và cache của Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+
+# Thư mục Android / Gradle cache
+android/.gradle/
+android/app/debug/
+android/app/profile/
+android/app/release/
+android/key.properties
+android/local.properties
+
+# Cache gây ra lỗi "Could not close incremental caches"
+**/caches-jvm/
+**/*.tab
+
+# Cấu hình IDE (VS Code, Android Studio)
+.idea/
+*.iml
+.vscode/
+
+# ==========================================
+# 3. OS & SYSTEM FILES
+# ==========================================
+.DS_Store
+Thumbs.db
+desktop.ini

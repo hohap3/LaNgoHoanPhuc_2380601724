@@ -1,0 +1,195 @@
+================================================================================
+          BÁO CÁO TỔNG HỢP CÁC CHỨC NĂNG ĐÃ THỰC HIỆN TRONG DỰ ÁN
+          ỨNG DỤNG FLUTTER MOBILE - PHÂN QUYỀN & TIỆN ÍCH NÂNG CAO
+================================================================================
+Sinh viên thực hiện : La Ngô Hoàn Phúc
+Mã số sinh viên     : 2380601724
+Dự án               : Hệ thống Phân quyền người dùng & Tích hợp Thiết bị Di động
+Nền tảng            : Flutter (Android / Multi-platform)
+Ngôn ngữ            : Dart (SDK ^3.13.3)
+Phiên bản           : 1.0.0+1
+================================================================================
+
+I. TỔNG QUAN HỆ THỐNG
+--------------------------------------------------------------------------------
+Dự án là ứng dụng di động hoàn chỉnh bao gồm hệ thống Xác thực bảo mật 2 lớp (2FA),
+Phân quyền theo vai trò (Role-Based Access Control: Admin, Staff, Customer),
+Quản trị dữ liệu người dùng (CRUD Users), kết hợp chuỗi tính năng phần cứng thiết
+bị di động cao cấp: Định vị GPS & Chia sẻ vị trí, Sinh trắc học (Vân tay/FaceID),
+Quét & Tạo mã QR/Barcode, Giao tiếp không tiếp xúc NFC, và Dịch thuật đa ngôn ngữ.
+
+
+II. CHI TIẾT CÁC TÍNH NĂNG ĐÃ HOÀN THIỆN
+--------------------------------------------------------------------------------
+
+1. HỆ THỐNG XÁC THỰC & BẢO MẬT (AUTHENTICATION & SECURITY)
+   - Đăng ký tài khoản (Register):
+     + Nhập đầy đủ thông tin: Họ tên, Tên đăng nhập, Email, Số điện thoại, Mật khẩu.
+     + Kiểm tra hợp lệ dữ liệu (Validate form: định dạng email, độ dài mật khẩu, trùng khớp mật khẩu).
+     + Phân bổ vai trò mặc định hoặc tùy chọn khi tạo tài khoản.
+   - Đăng nhập (Login):
+     + Đăng nhập bằng Tên đăng nhập và Mật khẩu.
+     + Nhớ thông tin đăng nhập và hỗ trợ cấu hình chuyển nhanh.
+   - Xác thực bảo mật 2 lớp (2FA - OTP Verification):
+     + Sau khi nhập đúng mật khẩu, hệ thống gửi mã OTP xác thực 6 số qua Email.
+     + Giao diện nhập mã OTP chuyên nghiệp dạng ô từng ký tự tự động focus.
+     + Bộ đếm ngược thời gian hết hạn OTP (60 giây).
+     + Chức năng gửi lại mã OTP (Resend OTP) khi hết thời gian.
+   - Quản lý phiên làm việc & Token:
+     + Lưu trữ an toàn Bearer Token và Refresh Token qua SharedPreferences.
+     + Tự động đính kèm Token xác thực vào Header của mọi API yêu cầu bảo mật.
+     + Tự động phân luồng điều hướng màn hình đúng theo vai trò (Role) sau khi xác thực thành công.
+     + Chức năng Đăng xuất an toàn: Xóa session, xóa token và điều hướng về trang đăng nhập.
+
+2. PHÂN QUYỀN & GIAO DIỆN THEO VAI TRÒ (ROLE-BASED ACCESS CONTROL - RBAC)
+   Hệ thống tự động nhận diện danh sách quyền của tài khoản để đưa vào giao diện tương ứng:
+   
+   A. DÀNH CHO QUẢN TRỊ VIÊN (ADMIN DASHBOARD):
+      - Quản lý danh sách người dùng toàn diện (CRUD):
+        + Xem danh sách tất cả tài khoản trong hệ thống kèm trạng thái và vai trò.
+        + Tìm kiếm người dùng tức thì theo Tên đăng nhập, Email, Họ tên hoặc Số điện thoại.
+        + Bộ lọc danh sách theo vai trò (Tất cả, Admin, Staff, Customer).
+        + Thao tác Kéo để làm mới (Pull-to-Refresh) danh sách từ máy chủ.
+      - Xem chi tiết thông tin người dùng:
+        + Hộp thoại hiển thị đầy đủ: ID, Username, Email, Số điện thoại, Vai trò, Ngày tạo tài khoản, Trạng thái kích hoạt.
+      - Thêm người dùng mới (Create):
+        + Form tạo tài khoản trực tiếp từ giao diện Admin, gán quyền linh hoạt.
+      - Cập nhật thông tin người dùng (Update):
+        + Chỉnh sửa Email, Số điện thoại, Họ tên, thay đổi vai trò (Roles), Khóa / Mở khóa tài khoản.
+      - Xóa người dùng (Delete):
+        + Hộp thoại cảnh báo xác nhận trước khi xóa tài khoản khỏi hệ thống.
+
+   B. DÀNH CHO NHÂN VIÊN (STAFF DASHBOARD):
+      - Giao diện làm việc chuyên biệt dành cho nhân sự tác nghiệp.
+      - Quản lý và theo dõi danh sách nhiệm vụ / công việc theo ca làm việc.
+      - Hiển thị mức độ ưu tiên (Khẩn cấp, Cao, Trung bình, Bình thường) và tiến độ xử lý.
+      - Truy cập nhanh vào các công cụ tiện ích mở rộng (GPS, QR, NFC, Dịch thuật).
+
+   C. DÀNH CHO KHÁCH HÀNG (CUSTOMER DASHBOARD):
+      - Giao diện trải nghiệm người dùng hiện đại, thân thiện.
+      - Quản lý các danh mục: Đơn hàng của tôi, Ưu đãi & Voucher, Ví & Thanh toán, Trung tâm hỗ trợ.
+      - Tích hợp lối tắt truy cập các tính năng công nghệ thông minh.
+
+3. TÍNH NĂNG PHẦN CỨNG 1: ĐỊNH VỊ GPS & CHIA SẺ VỊ TRÍ (LOCATION SHARING)
+   - Tự động kiểm tra dịch vụ GPS và xin cấp quyền truy cập vị trí (Location Permissions).
+   - Lấy tọa độ địa lý chính xác cao hiện tại (Vĩ độ - Latitude, Kinh độ - Longitude).
+   - Hiển thị đầy đủ thông số định vị: Độ chính xác (Accuracy theo mét), Độ cao (Altitude), Tốc độ di chuyển (Speed).
+   - Chế độ Theo dõi trực tiếp (Live Tracking Mode):
+     + Lắng nghe Stream tọa độ GPS liên tục cập nhật theo thời gian thực khi người dùng di chuyển.
+   - Tạo liên kết Google Maps tự động (`https://maps.google.com/?q=lat,lng`).
+   - Sao chép nhanh tọa độ hoặc đường link bản đồ vào Clipboard.
+   - Chia sẻ vị trí tức thì (Share Location):
+     + Tích hợp thư viện Share Plus giúp chia sẻ trực tiếp tọa độ và link Google Maps qua Zalo, Messenger, Tin nhắn SMS, Email,... chỉ với 1 chạm.
+
+4. TÍNH NĂNG PHẦN CỨNG 2: SINH TRẮC HỌC (BIOMETRIC AUTHENTICATION)
+   - Kiểm tra tính tương thích phần cứng của thiết bị (Hỗ trợ cảm biến vân tay Fingerprint, nhận diện gương mặt FaceID).
+   - Liệt kê danh sách các phương thức sinh trắc học thiết bị hỗ trợ.
+   - Thực hiện quét vân tay / FaceID an toàn thông qua nền tảng bảo mật của hệ điều hành (LocalAuthentication).
+   - Hỗ trợ lưu trữ cấu hình cho phép Đăng nhập nhanh bằng vân tay vào các lần sau mà không cần nhập lại mật khẩu.
+
+5. TÍNH NĂNG PHẦN CỨNG 3: MÃ QR & MÃ VẠCH (QR CODE & BARCODE)
+   - Quét mã qua Camera thời gian thực (Live Scanner):
+     + Tích hợp thư viện `mobile_scanner` quét cực nhanh và chính xác cả mã QR 2D và mã vạch Barcode 1D.
+     + Hỗ trợ nút bật/tắt Đèn Flash trợ sáng khi quét trong môi trường tối.
+     + Hỗ trợ chuyển đổi Camera trước / sau linh hoạt.
+     + Hiệu ứng khung ngắm quét laser chuyển động chuyên nghiệp.
+   - Quét mã từ hình ảnh trong Thư viện ảnh (Gallery Scanner):
+     + Chọn ảnh chụp sẵn chứa mã QR / Barcode từ album để giải mã dữ liệu.
+   - Trình tạo & hiển thị mã (Generator):
+     + Nhập văn bản bất kỳ để trực quan hóa thành mã QR Code hoặc mã vạch Barcode 1D (Code 128).
+     + Hỗ trợ sao chép nội dung quét, chia sẻ kết quả trực tiếp.
+
+6. TÍNH NĂNG PHẦN CỨNG 4: GIAO TIẾP TẦM NGẮN NFC (NEAR FIELD COMMUNICATION)
+   - Mô phỏng và tích hợp đọc thẻ thông minh NFC:
+     + Thẻ Sinh viên / Thẻ Nhân viên (HUTECH ID Card).
+     + Căn cước công dân gắn chip (CCCD Chuẩn ICAO).
+     + Thẻ thanh toán không tiếp xúc (EMV Contactless Visa/Mastercard).
+     + Thẻ thông minh NDEF (NTAG215).
+   - Hiển thị chi tiết dữ liệu thẻ: Mã định danh UID, Chuẩn công nghệ (ISO/IEC 14443 Type A/B), Dung lượng bộ nhớ, Dữ liệu Payload NDEF.
+   - Hỗ trợ tính năng ghi dữ liệu vào thẻ NFC (NFC Tag Writer).
+
+7. TÍNH NĂNG 5: DỊCH THUẬT ĐA NGÔN NGỮ (MULTILINGUAL TRANSLATION)
+   - Dịch thuật văn bản thời gian thực (Realtime Text Translation):
+     + Kết nối dịch trực tiếp thông qua Google Translate API tốc độ cao.
+     + Hỗ trợ hơn 10 ngôn ngữ phổ biến: Tiếng Việt, Tiếng Anh, Tiếng Nhật, Tiếng Hàn, Tiếng Trung, Tiếng Pháp, Tiếng Đức, Tiếng Tây Ban Nha, Tiếng Nga, Tiếng Thái.
+     + Tính năng Tự động phát hiện ngôn ngữ nguồn (Auto-detect language).
+   - Tiện ích dịch thông minh:
+     + Nút chuyển đổi nhanh chiều dịch (Swap languages).
+     + Xóa nhanh văn bản, sao chép kết quả dịch 1 chạm.
+   - Dịch từ hình ảnh (Image Translation):
+     + Chụp ảnh trực tiếp từ Camera hoặc chọn ảnh từ Thư viện (ImagePicker) để hỗ trợ dịch nội dung.
+
+8. CẤU HÌNH MẠNG & KẾT NỐI API ĐỘNG (DYNAMIC API CONFIGURATION)
+   - Hộp thoại Cấu hình Máy chủ (API Settings Dialog):
+     + Cho phép đổi URL API Backend ngay trên ứng dụng mà không cần build lại mã nguồn.
+     + Cài đặt sẵn các cấu hình nhanh (Presets):
+       * Android Emulator (`http://10.0.2.2:5000/api`)
+       * Localhost máy tính (`http://localhost:5000/api`)
+       * Mạng LAN WiFi nội bộ (VD: `http://192.168.1.x:5000/api`)
+     + Kiểm tra trạng thái kết nối mạng (Ping / Connection test).
+     + Lưu cấu hình máy chủ vào SharedPreferences để ghi nhớ cho các phiên sau.
+
+
+III. CẤU TRÚC KIẾN TRÚC MÃ NGUỒN (PROJECT ARCHITECTURE)
+--------------------------------------------------------------------------------
+lib/
+ ├── main.dart                                # Điểm khởi chạy ứng dụng & Thiết lập Theme
+ ├── config/
+ │    └── app_config.dart                     # Quản lý cấu hình API URL, Bảng màu sắc chuẩn
+ ├── models/
+ │    ├── api_response.dart                   # Mô hình phản hồi chuẩn hóa từ API Backend
+ │    └── user_model.dart                     # Model User, Request đăng ký, đăng nhập, cập nhật
+ ├── services/
+ │    ├── api_service.dart                    # Xử lý toàn bộ HTTP Request (Auth, 2FA, CRUD Users)
+ │    ├── storage_service.dart                # Quản lý SharedPreferences (Token, Role, Settings)
+ │    └── translation_service.dart            # Service kết nối Google Translate API
+ ├── screens/
+ │    ├── splash_screen.dart                  # Màn hình chờ kiểm tra phiên đăng nhập
+ │    ├── auth/
+ │    │    ├── login_screen.dart              # Màn hình đăng nhập
+ │    │    ├── register_screen.dart           # Màn hình đăng ký tài khoản
+ │    │    └── verify_otp_screen.dart         # Màn hình xác thực mã OTP 2FA
+ │    ├── admin/
+ │    │    ├── admin_dashboard_screen.dart    # Bảng điều khiển Quản trị viên & Danh sách người dùng
+ │    │    ├── user_detail_dialog.dart        # Hộp thoại xem thông tin chi tiết người dùng
+ │    │    ├── user_edit_dialog.dart          # Hộp thoại chỉnh sửa thông tin & vai trò
+ │    │    └── user_form_dialog.dart          # Hộp thoại tạo mới người dùng
+ │    ├── staff/
+ │    │    └── staff_dashboard_screen.dart    # Bảng điều khiển Nhân viên tác nghiệp
+ │    ├── customer/
+ │    │    └── customer_dashboard_screen.dart # Bảng điều khiển Khách hàng
+ │    └── features/
+ │         ├── biometric_nfc_qr_screen.dart   # Màn hình tích hợp Sinh trắc học, QR/Barcode và NFC
+ │         ├── qr_barcode_scanner_screen.dart # Màn hình quét Camera QR / Barcode chuyên dụng
+ │         ├── location_sharing_screen.dart   # Màn hình định vị GPS & Chia sẻ vị trí
+ │         └── translation_screen.dart        # Màn hình dịch thuật đa ngôn ngữ thời gian thực
+ └── widgets/
+      ├── api_settings_dialog.dart            # Hộp thoại đổi API Endpoint linh hoạt
+      ├── app_dialogs.dart                    # Hộp thoại thông báo Success, Error, Loading
+      ├── custom_button.dart                  # Nút bấm tùy biến giao diện hiện đại
+      ├── custom_text_field.dart              # Ô nhập liệu có validation & icon
+      ├── features_grid_section.dart          # Widget hiển thị phím tắt tính năng mở rộng
+      └── role_badge.dart                     # Badge phân loại vai trò trực quan theo màu
+
+
+IV. DANH SÁCH CÁC THƯ VIỆN CHÍNH ĐÃ TÍCH HỢP (DEPENDENCIES)
+--------------------------------------------------------------------------------
+- flutter / sdk: Xây dựng giao diện Material 3.
+- http (^1.6.0): Kết nối giao thức RESTful API, gửi nhận dữ liệu JSON.
+- shared_preferences (^2.5.6): Lưu trữ cục bộ Token, Session, Cấu hình API.
+- geolocator (^14.1.2): Định vị toàn cầu GPS, lấy tọa độ, Stream vị trí realtime.
+- share_plus (^13.3.1): Chia sẻ dữ liệu, tọa độ, bản đồ sang các app khác.
+- local_auth (^3.0.2): Xác thực sinh trắc học vân tay, FaceID.
+- mobile_scanner (^7.4.2): Quét mã QR Code và Barcode qua Camera phần cứng.
+- image_picker (^1.2.4): Chọn ảnh từ Thư viện và Chụp ảnh từ Camera.
+- cupertino_icons (^1.0.8): Hệ thống icon giao diện.
+
+
+V. KẾT LUẬN & ĐÁNH GIÁ
+--------------------------------------------------------------------------------
+- Ứng dụng hoạt động mượt mà, đầy đủ tính năng theo yêu cầu đồ án/bài tập lớn.
+- Đảm bảo tính toàn vẹn dữ liệu, kiểm soát ngoại lệ (Exception Handling, Timeout, Lỗi mạng).
+- Giao diện Material 3 đẹp mắt, chuẩn UX/UI với màu sắc hài hòa và phản hồi tương tác tốt.
+- Đáp ứng đầy đủ quy trình xác thực đa lớp bảo mật kết hợp khai thác hiệu quả các phần cứng
+  di động hiện đại (Camera, GPS, Biometric, NFC).
+================================================================================
