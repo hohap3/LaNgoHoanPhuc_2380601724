@@ -74,6 +74,30 @@ class AppDialogs {
     );
   }
 
+  static void showWarning(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.warning_amber_rounded, color: Colors.white),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                message,
+                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: const Color(0xFFD97706),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        margin: const EdgeInsets.all(16),
+        duration: const Duration(seconds: 4),
+      ),
+    );
+  }
+
   static Future<bool> showConfirmDialog({
     required BuildContext context,
     required String title,
